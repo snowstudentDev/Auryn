@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auryn</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #121212;
+            color: #ffffff;
+            text-align: center;
+            position: relative; /* Added for positioning the particles */
+            overflow: hidden; /* Prevents scrollbars from appearing */
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #6200ea;
+        }
+        iframe {
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            position: relative; /* Added for layering */
+            z-index: 1; /* Ensure iframe is above particles */
+        }
+        #particles-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw; /* Full width */
+            height: 100vh; /* Full height */
+            z-index: -5; /* Ensure particles are behind other content */
+        }
+        input[type="text"] {
+            width: 300px;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
+        input[type="text"]::placeholder {
+            color: #888;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #6200ea;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #3700b3;
+        }
+        #savedUrls {
+            margin-top: 20px;
+            text-align: left;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .savedUrl {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #1e1e1e;
+            border-radius: 5px;
+        }
+        .savedUrl button {
+            background-color: #6200ea;
+        }
+        .savedUrl button:hover {
+            background-color: #3700b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div> <!-- Particles container -->
+    <h1>Auryn</h1>
+    <p>The Best cloaked website opener.</p>
+    <input type="text" id="nameInput" placeholder="Enter site name" />
+    <input type="text" id="urlInput" placeholder="Enter website URL" />
+    <button onclick="openLink()">Open URL</button>
+    <button onclick="saveUrl()">Save URL</button>
+
+    <div id="savedUrls"></div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Embedded particles configuration
+        const particlesConfig = {
+            "particles": {
+                "number": {
+                    "value": 200,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#fff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    },
+                    "image": {
+                        "src": "img/github.svg",
+                        "width": 100,
+                        "height": 100
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 10,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        " size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 2,
+                    "direction": "bottom", // Ensure particles move downwards
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "retina_detect": true
+        };
+
+        particlesJS("particles-js", particlesConfig);
+
+        function openLink() {
+            const url = document.getElementById('urlInput').value;
+            window.open(url, '_blank');
+        }
+
+        function saveUrl() {
+            const name = document.getElementById('nameInput').value;
+            const url = document.getElementById('urlInput').value;
+            const savedUrlsDiv = document.getElementById('savedUrls');
+            const urlDiv = document.createElement('div');
+            urlDiv.className = 'savedUrl';
+            urlDiv.innerHTML = `<span>${name}: ${url}</span><button onclick="removeUrl(this)">Remove</button>`;
+            savedUrlsDiv.appendChild(urlDiv);
+        }
+
+        function removeUrl(button) {
+            const urlDiv = button.parentElement;
+            urlDiv.remove();
+        }
+    </script>
+</body>
+</html>
