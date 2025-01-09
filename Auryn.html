@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auryn</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Source Code Pro';
             margin: 0;
             padding: 20px;
             background-color: #121212;
@@ -17,6 +19,7 @@
         }
         h1 {
             margin-bottom: 20px;
+            font-size: 100px;
             color: #6200ea;
         }
         iframe {
@@ -56,6 +59,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
+
         button:hover {
             background-color: #3700b3;
         }
@@ -81,6 +85,50 @@
         .savedUrl button:hover {
             background-color: #3700b3;
         }
+
+        /* Popup Styles */
+        .popup {
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        .popup-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            color: black;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        .popup.visible{
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -91,6 +139,13 @@
     <input type="text" id="urlInput" placeholder="Enter website URL" />
     <button onclick="openLink()">Open URL</button>
     <button onclick="saveUrl()">Save URL</button>
+    <button id="openPopup">Open Popup</button>
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close" id="closePopup">&times;</span>
+        </div>
+    </div>
 
     <div id="savedUrls"></div>
 
@@ -140,7 +195,7 @@
                     "anim": {
                         "enable": false,
                         "speed": 40,
-                        " size_min": 0.1,
+                        "size_min": 0.1,
                         "sync": false
                     }
                 },
@@ -154,7 +209,7 @@
                 "move": {
                     "enable": true,
                     "speed": 2,
-                    "direction": "bottom", // Ensure particles move downwards
+                    "direction": "bottom",
                     "random": false,
                     "straight": false,
                     "out_mode": "out",
@@ -173,7 +228,12 @@
 
         function openLink() {
             const url = document.getElementById('urlInput').value;
-            window.open(url, '_blank');
+            const name = document.getElementById('nameInput').value;
+            const newWindow = window.open('about:blank', '_blank');
+            newWindow.document.title = name;
+            newWindow.document.body.style.margin = '0'; // Remove default margin
+            newWindow.document.body.style.padding = '0'; // Remove default padding
+            newWindow.document.body.innerHTML = `<iframe src="${url}" width="100%" height="100%" style="border:none; position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></iframe>`;
         }
 
         function saveUrl() {
@@ -189,6 +249,25 @@
         function removeUrl(button) {
             const urlDiv = button.parentElement;
             urlDiv.remove();
+        }
+
+        // Popup functionality
+        const popup = document.getElementById("popup");
+        const openPopup = document.getElementById("openPopup");
+        const closePopup = document.getElementById("closePopup");
+
+        openPopup.onclick = function() {
+            popup.classList.toggle('visible');
+        }
+
+        closePopup.onclick = function() {
+            popup.classList.toggle('visible');
+        }
+
+        window.onclick = function(event) {
+            if (event.target == popup) {
+                popup.style.display = "none";
+            }
         }
     </script>
 </body>
