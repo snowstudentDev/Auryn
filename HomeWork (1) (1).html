@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auryn - The Funny Little Numbers on the back of your parents credit card!!!!</title>
+    <style>
+        :root {
+            --lavender-web: #d8d8f6ff;
+            --african-violet: #b18fcfff;
+            --rose-quartz: #978897ff;
+            --davys-gray: #494850ff;
+            --raisin-black: #2c2c34ff;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            background-color: var(--raisin-black); /* Dark background */
+            color: var(--lavender-web); /* Light text color */
+            border-radius: 20px;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        header img {
+            width: 50px; /* Logo size */
+            height: 50px; /* Logo size */
+            margin-right: 10px;
+        }
+        h1 {
+            font-size: 2em;
+            color: var(--african-violet); /* Green heading */
+        }
+        .input-container {
+            margin-bottom: 20px;
+        }
+        input[type="text"], select {
+            width: 300px;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid var(--davys-gray); /* Dark border */
+            border-radius: 5px;
+            background-color: var(--rose-quartz); /* Dark input background */
+            color: var(--raisin-black); /* Light text color */
+            transition: border-color 0.3s;
+            border-radius: 10px;
+
+        }
+        input[type="text"]::placeholder {
+            color: #494850ff; /* Placeholder color */
+        }
+        input[type="text"]:focus {
+            border-color: var(--african-violet); /* Green border on focus */
+            outline: none; /* Remove default outline */
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--african-violet); /* Blue button */
+            color: var(--raisin-black); /* White text */
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: var(--lavender-web); /* Lighter blue on hover */
+            transform: translateY(-2px); /* Lift effect */
+        }
+        #savedUrls {
+            margin-top: 20px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center the saved URLs */
+        }
+        .savedUrl {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 5px 0;
+            padding: 8px; /* Smaller padding */
+            background-color: var(--davys-gray); /* Dark background for saved URLs */
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            max-width: 300px; /* Set a max width for saved URL divs */
+            width: 100%; /* Full width for better alignment */
+        }
+        .savedUrl:hover {
+            background-color: var(--rose-quartz); /* Slightly lighter on hover */
+        }
+        .savedUrl button {
+            margin-left: 10px;
+            background-color: var(--african-violet); /* Green button */
+        }
+        .savedUrl button:hover {
+            background-color: var(--lavender-web); /* Lighter green on hover */
+        }
+    </style>
+</head>
+<body>
+       <!-- <img src="logo.png" alt="Auryn Logo">  Replace with your logo URL --->
+        <h1>Auryn</h1>
+
+
+    <div id="navBar"></div>
+
+    <div class="input-container">
+        <input type="text" id="nameInput" placeholder="Enter site name"  autocomplete="off" />
+        <input type="text" id="urlInput" placeholder="Enter website URL or local file path" autocomplete="off" />
+        
+        <select id="embedType">
+            <option value="iframe">Iframe</option>
+            <option value="embed">Embed</option>
+        </select>
+    </div>
+    
+    <button onclick="openLink()">Open URL</button>
+    <button onclick="saveUrl()">Save URL</button>
+
+    <div id="savedUrls"></div>
+
+    <script>
+        function openLink(name, url) {
+            if (!url) {
+                alert('Please enter a valid URL or file path');
+                return;
+            }
+
+            var newWindow = window.open('about:blank', '_blank');
+            newWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <title>${name}</title>
+                    <style> 
+                        body { margin: 0; background-color: var(--raisin-black); color: var(--lavender-web); }
+                        iframe, embed { width: 100vw; height: 100vh; border: none; }
+                    </style>
+                </head>
+                <body>
+                    <embed src="${url}" type="text/html">
+                </body>
+                </html>
+            `);
+            newWindow.document.close();
+        }
+    
+        function saveUrl() {
+            const url = document.getElementById('urlInput').value;
+            const name = document.getElementById('nameInput').value;
+    
+            if (!url || !name) {
+                alert('Please enter a valid URL and a name to save');
+                return;
+            }
+    
+            let savedUrls = JSON.parse(localStorage.getItem('savedUrls')) || [];
+            const existing = savedUrls.find(item => item.name === name);
+            if (!existing) {
+                savedUrls.push({ name, url });
+                localStorage.setItem('savedUrls', JSON.stringify(savedUrls));
+                loadSavedUrls();
+            } else {
+                alert('This name is already saved. Please choose a different name.');
+            }
+        }
+    
+        function deleteUrl(name) {
+            let savedUrls = JSON.parse(localStorage.getItem('savedUrls')) || [];
+            savedUrls = savedUrls.filter(item => item.name !== name);
+            localStorage.setItem('savedUrls', JSON.stringify(savedUrls));
+            loadSavedUrls();
+        }
+    
+        function loadSavedUrls() {
+            const savedUrls = JSON.parse(localStorage.getItem('savedUrls')) || [];
+            const savedUrlsDiv = document.getElementById('savedUrls');
+            savedUrlsDiv.innerHTML = '<h3>Saved URLs:</h3>';
+            savedUrls.forEach(item => {
+                const urlDiv = document.createElement('div');
+                urlDiv.className = 'savedUrl';
+                const button = document.createElement('button');
+                button.innerText = item.name;
+                button.onclick = () => openLink(item.name, item.url); // Call openLink with name and url
+                const deleteButton = document.createElement('button');
+                deleteButton.innerText = ' Delete';
+                deleteButton.onclick = () => deleteUrl(item.name);
+                
+                urlDiv.appendChild(button);
+                urlDiv.appendChild(deleteButton);
+                savedUrlsDiv.appendChild(urlDiv);
+            });
+        }
+    
+        // Load saved URLs on page load
+        window.onload = loadSavedUrls;
+    </script>
+</body>
+</html>
